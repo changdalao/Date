@@ -10,7 +10,18 @@ private:
 	int _month;
 	int _day;
 public:
-	Date(int, int, int);
+	Date(int year=1900,int month=1,int day=1):
+		_year(year),
+		_month(month),
+		_day(day)
+	{
+		if (month < 0 || month>12 || day < 0 || day>31)
+		{
+			cout << "æ—¥æœŸä¸åˆæ³•" << endl;
+			assert(false);
+		}
+	}
+	//Date(int, int, int);
 	Date(const Date& d);
 	bool operator<(const Date& d);
 	bool operator>(const Date& d);
@@ -18,17 +29,23 @@ public:
 	bool operator>=(const Date& d);
 	bool operator==(const Date& d);
 	bool operator!=(const Date& d);
+	Date operator++();//å‰ç½®++
+	Date operator++(int);//åç½®++
 	Date operator+(int d);
+	Date operator+=(int d);
 	Date operator-(int d);
+	Date operator-=(int d);
 	int operator-(Date& d);
 	void Show();
 };
-Date::Date(int year = 1990, int month = 1, int day = 1)
-{
-	_year = year;
-	_month = month;
-	_day = day;
-}
+
+
+//Date::Date(int year = 1990, int month = 1, int day = 1)
+//{
+//	_year = year;
+//	_month = month;
+//	_day = day;
+//}
 
 Date::Date(const Date& d)
 {
@@ -40,6 +57,18 @@ Date::Date(const Date& d)
 void Date::Show()
 {
 	cout << _year << "-" << _month << "-" << _day << endl;
+}
+
+Date Date::operator++()//å‰ç½®++
+{
+	*this += 1;
+	return *this;
+}
+
+Date Date::operator++(int)//åç½®++
+{
+	*this + 1;
+	return *this;
 }
 
 bool Date::operator<(const Date& d)
@@ -114,9 +143,15 @@ Date Date::operator+(int d)
 	return ret;
 }
 
+Date Date::operator+=(int d)
+{
+	*this = *this + d;
+	return *this;
+}
+
 Date Date::operator-(int d)
 {
-	Date ret(*this);
+	Date ret(*this);//æ‹·è´å½“å‰å€¼è¿›è¡Œè¿ç®—
 	ret._day -= d;
 	while (ret._day < 0)
 	{
@@ -131,20 +166,26 @@ Date Date::operator-(int d)
 	return ret;
 }
 
+Date Date::operator-=(int d)
+{
+	*this = *this - d;
+	return *this;
+}
+
 int Date::operator-(Date& d)
 {
 	Date max = *this;
 	Date min = d;
-	if (operator<(d))//ÕÒ³ö½Ï´óµÄÄê·İ
+	if (operator<(d))//æ‰¾å‡ºè¾ƒå¤§çš„å¹´ä»½
 	{
 		max = d;
 		min = *this;
 	}
-	int count = max._day-min._day;//Çó³öÌìÊıÖ®²î£¬ºóÃæµÄÔËËã²»ÔÚÇ£³¶
-	while ((max._year != min._year)||(max._month != min._month))//max¶ÔÓ¦µÄÄê¡¢ÔÂ¼õµ½ºÍminÒ»ÑùÊ±£¬Ìø³öÑ­»·
+	int count = max._day-min._day;//æ±‚å‡ºå¤©æ•°ä¹‹å·®ï¼Œåé¢çš„è¿ç®—ä¸åœ¨ç‰µæ‰¯
+	while ((max._year != min._year)||(max._month != min._month))//maxå¯¹åº”çš„å¹´ã€æœˆå‡åˆ°å’Œminä¸€æ ·æ—¶ï¼Œè·³å‡ºå¾ªç¯
 	{
-		int day = GetMonthDays(max._year, max._month);//Ïà²î¶ÔÓ¦ÔÂµÄÌìÊı
-		count=count+day;//¼ÓÉÏ¶ÔÓ¦ÌìÊı
+		int day = GetMonthDays(max._year, max._month);//ç›¸å·®å¯¹åº”æœˆçš„å¤©æ•°
+		count=count+day;//åŠ ä¸Šå¯¹åº”å¤©æ•°
 		max._month--;
 		if (max._month == 0)
 		{
@@ -179,10 +220,10 @@ void Test()
 	cout << "d2<=d3? "<< (d2 <= d3) << endl;
 	cout << "------------------------" << endl;
 	Date ret = d3 + 100;
-	cout << "d3+100Ìì: ";
+	cout << "d3+100å¤©: ";
 	ret.Show();
 	ret = d3 - 100;
-	cout << "d3-100Ìì: ";
+	cout << "d3-100å¤©: ";
 	ret.Show();
-	cout << "d2-d4Ïà²î£º " << (d2 - d4)<<"Ìì" << endl; 
+	cout << "d2-d4ç›¸å·®ï¼š " << (d2 - d4)<<"å¤©" << endl;
 }
